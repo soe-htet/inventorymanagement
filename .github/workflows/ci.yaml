@@ -1,0 +1,34 @@
+
+name: Inventory Management CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore InventoryManagement.slnx
+
+      - name: Build
+        run: dotnet build InventoryManagement.slnx --no-restore --configuration Release
+
+      - name: Run tests
+        env: env:
+        Jwt__Key: "IntegrationTestOnlyKey_ChangeMe_12345678901234567890"
+        Jwt__Issuer: "InventoryManagement"
+        Jwt__Audience: "InventoryManagement"
+        run: dotnet test InventoryManagement.slnx --no-build --configuration Release
