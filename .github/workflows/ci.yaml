@@ -28,7 +28,7 @@ jobs:
 
       - name: Run tests
         env:
-        Jwt__Key: "IntegrationTestOnlyKey_ChangeMe_12345678901234567890"
-        Jwt__Issuer: "InventoryManagement"
-        Jwt__Audience: "InventoryManagement"
+          Jwt__Key: "IntegrationTestOnlyKey_ChangeMe_12345678901234567890"
+          Jwt__Issuer: "InventoryManagement"
+          Jwt__Audience: "InventoryManagement"
         run: dotnet test InventoryManagement.slnx --no-build --configuration Release
