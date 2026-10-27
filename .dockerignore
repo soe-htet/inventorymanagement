@@ -1,0 +1,32 @@
+# .NET build files
+**/bin/
+**/obj/
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Environment variables and secrets
+.env
+**/.env
+.env.*
+**/.env.*
+**/appsettings.*.local.json
+
+# SQLite database files
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/*.sqlite
+
+# Test results
+**/TestResults/
+**/coverage/
+
+# OS files
+.DS_Store

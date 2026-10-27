@@ -5,6 +5,15 @@
 
 # dotenv files
 .env
+.env.*
+!.env.example
+
+# local dbs
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/bin/
+**/obj/
 
 # User-specific files
 *.rsuser
