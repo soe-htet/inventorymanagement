@@ -74,14 +74,23 @@ builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
+// Temporary migration setup for development and Azure learning
+if (app.Environment.IsDevelopment() ||
+    app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
+{
+    using var scope = app.Services.CreateScope();
+
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    await db.Database.MigrateAsync();
+}
+
+// Seed admin only in Development
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
-    
-    var context = scope.ServiceProvider
-        .GetRequiredService<AppDbContext>();
 
-    await context.Database.MigrateAsync();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
     var passwordHasher = scope.ServiceProvider
         .GetRequiredService<IPasswordHasher>();
