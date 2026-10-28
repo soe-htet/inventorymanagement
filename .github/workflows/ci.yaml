@@ -61,4 +61,35 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/inventory-api:latest
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/inventory-api:latest
+            ghcr.io/${{ github.repository_owner }}/inventory-api:${{ github.sha }}
+
+  deploy:
+    name: Deploy to Azure
+    needs: publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az extension add --name containerapp --upgrade
+
+            az containerapp update \
+              --name inventory-api-dev \
+              --resource-group rg-inventory-dev \
+              --image ghcr.io/${{ github.repository_owner }}/inventory-api:${{ github.sha }}
